@@ -1,0 +1,35 @@
+{% extends "rental/base.html" %}
+
+{% block title %}{{ title }} | Nestoria - Live Elevated{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-card mx-auto">
+        <h2 class="fw-bold mb-3">{{ title }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark small">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="form-text small text-muted">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="d-flex align-items-center gap-2 mt-4">
+                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+                    Save Changes
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-light rounded-pill px-4 py-2">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

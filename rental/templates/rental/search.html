@@ -1,0 +1,87 @@
+{% extends "rental/base.html" %}
+{% load static %}
+
+{% block title %}Search Properties | Nestoria - Live Elevated{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center max-w-xl mx-auto mb-5">
+        <span class="section-tag-purple">EXPLORE LISTINGS</span>
+        <h1 class="section-heading-lg">Find Your Next Space</h1>
+        <p class="text-muted">Search through all available residences, villas, and luxury apartments.</p>
+
+        <!-- Search Bar -->
+        <div class="search-capsule-wrapper mx-auto mt-4" style="max-width: 600px;">
+            <form method="get" action="{% url 'search' %}" class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-grow-1 px-2">
+                    <i class="bi bi-search text-primary fs-5"></i>
+                    <input type="text" name="q" value="{{ query|default:'' }}" class="form-control border-0 bg-transparent shadow-none" placeholder="Search by city, title, or keywords...">
+                </div>
+                <button type="submit" class="btn-search-capsule py-2 px-4">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4 class="fw-bold mb-0">Search Results {% if query %}<span class="text-muted fw-normal fs-6">for "{{ query }}"</span>{% endif %}</h4>
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">{{ properties|length }} Available Properties</span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for p in properties %}
+            <div class="col">
+                <div class="property-card-nestoria">
+                    <div class="property-img-wrapper">
+                        <span class="property-badge-tag badge-featured">{{ p.property_type }}</span>
+                        <button type="button" class="btn-fav-heart" onclick="toggleFavorite(event, '{{ p.id }}', '{{ p.title|escapejs }}', '{{ p.location|escapejs }}', '${{ p.monthly_rent|floatformat:0 }} / month')">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.title }}" class="property-card-img">
+                        {% else %}
+                            <img src="{% static 'rental/images/property-1.jpg' %}" alt="{{ p.title }}" class="property-card-img">
+                        {% endif %}
+                    </div>
+
+                    <div class="property-card-body">
+                        <h3 class="property-card-title">
+                            <a href="{% url 'property_detail' p.pk %}">{{ p.title }}</a>
+                        </h3>
+                        <div class="property-card-location">
+                            <i class="bi bi-geo-alt-fill"></i> {{ p.location }}
+                        </div>
+
+                        <div class="property-specs-row">
+                            <div class="spec-item"><i class="bi bi-door-closed"></i> {{ p.bedrooms }} Beds</div>
+                            <span>·</span>
+                            <div class="spec-item"><i class="bi bi-droplet"></i> {{ p.bathrooms }} Baths</div>
+                        </div>
+
+                        <div class="property-bottom-row">
+                            <div class="property-price-box">
+                                <span class="price-main">${{ p.monthly_rent|floatformat:0 }}</span>
+                                <span class="price-period">/ month</span>
+                            </div>
+                            <a href="{% url 'property_detail' p.pk %}" class="btn-view-details">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border shadow-sm max-w-lg mx-auto">
+                    <i class="bi bi-house-x text-muted" style="font-size: 3rem;"></i>
+                    <h4 class="fw-bold mt-3">No Properties Found</h4>
+                    <p class="text-muted">We couldn't find any listings matching your search criteria. Try a different city or keyword.</p>
+                    <a href="{% url 'home' %}" class="btn btn-dark rounded-pill px-4">Browse All Properties</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

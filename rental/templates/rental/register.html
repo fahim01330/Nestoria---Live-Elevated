@@ -1,0 +1,42 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Create an Account | Nestoria - Live Elevated{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-card mx-auto">
+        <div class="text-center mb-4">
+            <div class="brand-icon-box mx-auto mb-3" style="width: 52px; height: 52px; border-radius: 14px;">
+                <i class="bi bi-stars fs-3"></i>
+            </div>
+            <h2 class="fw-bold mb-1">Join Nestoria</h2>
+            <p class="text-muted small">Choose your role and start your luxury property journey</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark small">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="form-text small text-muted">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold mt-2" style="background: var(--navy-dark);">
+                Create Account
+            </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+            <span class="text-muted small">Already have an account?</span>
+            <a href="{% url 'login' %}" class="fw-bold ms-1 text-primary">Sign In</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

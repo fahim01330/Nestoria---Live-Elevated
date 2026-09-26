@@ -1,0 +1,500 @@
+{% extends "rental/base.html" %}
+{% load static %}
+
+{% block title %}Nestoria - Live Elevated | Find Your Dream Home{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- ==========================================================================
+         HERO SECTION
+         ========================================================================== -->
+    <section class="hero-section">
+        <div class="hero-grid">
+            <!-- Left Column: Copy & Search Capsule -->
+            <div>
+                <!-- Tag Badge -->
+                <div class="hero-pill-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                    </svg>
+                    <span>Dream · Search · Own</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="hero-title">
+                    Discover Spaces<br>
+                    That Feel Like <span class="gradient-word">Home</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="hero-desc">
+                    Find handpicked properties for rent or sale that match your lifestyle and budget.
+                </p>
+
+                <!-- Floating Search Capsule Bar -->
+                <div class="search-capsule">
+                    <form method="get" action="{% url 'home' %}">
+                        <!-- Location Field -->
+                        <div class="search-field">
+                            <div class="field-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                            </div>
+                            <div class="field-meta">
+                                <span class="field-label">Location</span>
+                                <input type="text" name="location" class="field-input" placeholder="New York, USA" value="{{ filters.location|default:'' }}">
+                            </div>
+                        </div>
+
+                        <div class="field-divider"></div>
+
+                        <!-- Property Type Field -->
+                        <div class="search-field">
+                            <div class="field-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                </svg>
+                            </div>
+                            <div class="field-meta">
+                                <span class="field-label">Property Type</span>
+                                <select name="property_type" class="field-select">
+                                    <option value="">Any Type</option>
+                                    {% for val, label in property_types %}
+                                        <option value="{{ val }}" {% if filters.property_type == val %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field-divider"></div>
+
+                        <!-- Price Range Field -->
+                        <div class="search-field">
+                            <div class="field-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-1h-1c-.55 0-1-.45-1-1v-3c0-.55.45-1 1-1h3v-1H9V8h2V7h2v1h1c.55 0 1 .45 1 1v3c0 .55-.45 1-1 1h-3v1h4v2h-2v1z"/>
+                                </svg>
+                            </div>
+                            <div class="field-meta">
+                                <span class="field-label">Price Range</span>
+                                <select name="price_range" class="field-select">
+                                    <option value="">Any Price</option>
+                                    <option value="under-1000" {% if filters.price_range == 'under-1000' %}selected{% endif %}>Under $1,000</option>
+                                    <option value="1000-5000" {% if filters.price_range == '1000-5000' or not filters.price_range %}selected{% endif %}>$1,000 - $5,000</option>
+                                    <option value="5000-plus" {% if filters.price_range == '5000-plus' %}selected{% endif %}>$5,000+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-capsule-search">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Villa Photo & Floating Badge -->
+            <div class="hero-media-box">
+                <!-- Floating Trusted Badge -->
+                <div class="trusted-families-badge">
+                    <div class="avatar-overlap-stack">
+                        <img src="{% static 'rental/images/avatar-trusted-1.jpg' %}" alt="Client 1">
+                        <img src="{% static 'rental/images/avatar-trusted-2.jpg' %}" alt="Client 2">
+                        <img src="{% static 'rental/images/avatar-trusted-3.jpg' %}" alt="Client 3">
+                    </div>
+                    <div class="trusted-badge-text">
+                        <span class="title">Trusted by 25K+</span>
+                        <span class="subtitle">Happy Families</span>
+                    </div>
+                </div>
+
+                <!-- Main Luxury Villa Image -->
+                <div class="hero-img-wrap">
+                    <img src="{% static 'rental/images/hero-villa.jpg' %}" alt="Luxury Villa Sunset">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         HIGHLIGHTS / 4 FEATURE CARDS ROW
+         ========================================================================== -->
+    <section class="highlights-section" id="services">
+        <div class="highlights-grid">
+            <!-- Feature 1 -->
+            <div class="highlight-card">
+                <div class="highlight-icon icon-purple">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <div class="highlight-content">
+                    <h4>Verified Properties</h4>
+                    <p>All properties are verified for your peace of mind.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="highlight-card">
+                <div class="highlight-icon icon-pink">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+                    </svg>
+                </div>
+                <div class="highlight-content">
+                    <h4>Safe & Secure</h4>
+                    <p>Your safety is our priority in every transaction.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="highlight-card">
+                <div class="highlight-icon icon-blue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                    </svg>
+                </div>
+                <div class="highlight-content">
+                    <h4>24/7 Support</h4>
+                    <p>Our team is here to help you anytime, anywhere.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="highlight-card">
+                <div class="highlight-icon icon-amber">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                </div>
+                <div class="highlight-content">
+                    <h4>Best Price Guarantee</h4>
+                    <p>Get the best deals at the best prices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         WHY CHOOSE NESTORIA ("MORE THAN JUST A PROPERTY")
+         ========================================================================== -->
+    <section class="why-choose-section" id="why-choose">
+        <div class="why-choose-grid">
+            <!-- Left Info -->
+            <div>
+                <span class="section-tag-purple">WHY CHOOSE NESTORIA</span>
+                <h2 class="section-heading-lg">More Than Just<br>A Property</h2>
+                <p class="section-desc">
+                    We offer more than just spaces. We deliver experiences that fit your life and future.
+                </p>
+
+                <div class="check-list">
+                    <div class="check-item">
+                        <div class="check-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <span>Wide range of premium rental options</span>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="check-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <span>Flexible rent terms & easy agreements</span>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="check-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <span>Personalized recommendations</span>
+                    </div>
+
+                    <div class="check-item">
+                        <div class="check-circle">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <span>Trusted by thousands of happy clients</span>
+                    </div>
+                </div>
+
+                <a href="#featured" class="btn-learn-more">
+                    Learn More
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Right Photo -->
+            <div class="why-choose-img-box">
+                <img src="{% static 'rental/images/why-choose.jpg' %}" alt="Luxury Living Room Interior">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         FEATURED PROPERTIES SECTION
+         ========================================================================== -->
+    <section class="featured-section" id="featured">
+        <div class="featured-header-row">
+            <div>
+                <h2 class="section-heading-lg" style="margin-bottom:4px;">Featured Properties</h2>
+                <p style="color:#64748b; margin:0;">Explore our curated selection of premier residences.</p>
+            </div>
+            <a href="{% url 'search' %}" class="view-all-link">
+                View All Properties
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="properties-grid">
+            {% for p in properties %}
+                <div class="property-card">
+                    <!-- Image Wrapper -->
+                    <div class="property-card-img-box">
+                        {% if forloop.counter == 1 %}
+                            <span class="property-badge badge-purple">Featured</span>
+                        {% elif forloop.counter == 2 %}
+                            <span class="property-badge badge-green">New</span>
+                        {% elif forloop.counter == 3 %}
+                            <span class="property-badge badge-pink">Hot Deal</span>
+                        {% else %}
+                            <span class="property-badge badge-purple">{{ p.property_type }}</span>
+                        {% endif %}
+
+                        <button type="button" class="btn-card-fav active" onclick="toggleFavorite(event, '{{ p.id }}', '{{ p.title|escapejs }}', '{{ p.location|escapejs }}', '${{ p.monthly_rent|floatformat:0 }} / month')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="2">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.title }}">
+                        {% elif forloop.counter == 1 %}
+                            <img src="{% static 'rental/images/property-1.jpg' %}" alt="{{ p.title }}">
+                        {% elif forloop.counter == 2 %}
+                            <img src="{% static 'rental/images/property-2.jpg' %}" alt="{{ p.title }}">
+                        {% else %}
+                            <img src="{% static 'rental/images/property-3.jpg' %}" alt="{{ p.title }}">
+                        {% endif %}
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="property-card-body">
+                        <h3 class="property-card-title">
+                            <a href="{% url 'property_detail' p.pk %}">{{ p.title }}</a>
+                        </h3>
+
+                        <div class="property-card-location">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#4f46e5">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <span>{{ p.location }}</span>
+                        </div>
+
+                        <div class="property-specs">
+                            <div class="spec-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/>
+                                </svg>
+                                <span>{{ p.bedrooms }} Beds</span>
+                            </div>
+                            <span>·</span>
+                            <div class="spec-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 6h6a3 3 0 0 1 3 3v2H6V9a3 3 0 0 1 3-3zM4 11h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1zM6 19v2M18 19v2"/>
+                                </svg>
+                                <span>{{ p.bathrooms }} Baths</span>
+                            </div>
+                            <span>·</span>
+                            <div class="spec-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                                </svg>
+                                <span>
+                                    {% if p.bedrooms == 5 %}4,200 sqft
+                                    {% elif p.bedrooms == 3 %}2,100 sqft
+                                    {% elif p.bedrooms == 4 %}3,600 sqft
+                                    {% else %}2,800 sqft{% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="property-card-footer">
+                            <div class="price-text">
+                                ${{ p.monthly_rent|floatformat:0 }} <small>/ month</small>
+                            </div>
+                            <a href="{% url 'property_detail' p.pk %}" class="btn-view-details">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         HOW IT WORKS SECTION ("3 EASY STEPS")
+         ========================================================================== -->
+    <section class="how-it-works-section" id="how-it-works">
+        <span class="section-tag-purple">HOW IT WORKS</span>
+        <h2 class="section-heading-lg">Find Your Dream Home in 3 Easy Steps</h2>
+
+        <div class="steps-container">
+            <div class="steps-line"></div>
+
+            <!-- Step 1 -->
+            <div class="step-card">
+                <div class="step-icon-outer step-icon-1">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                </div>
+                <span class="step-number">01</span>
+                <h4>Search & Explore</h4>
+                <p>Browse thousands of verified listings in your desired location.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <div class="step-icon-outer step-icon-2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                    </svg>
+                </div>
+                <span class="step-number">02</span>
+                <h4>Choose Your Property</h4>
+                <p>Compare options and find the perfect space for your lifestyle.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <div class="step-icon-outer step-icon-3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/>
+                    </svg>
+                </div>
+                <span class="step-number">03</span>
+                <h4>Move In & Enjoy</h4>
+                <p>Complete the process and start your new journey with confidence.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         WHAT OUR CLIENTS SAY (TESTIMONIALS)
+         ========================================================================== -->
+    <section class="testimonials-section">
+        <div style="text-align: center;">
+            <h2 class="section-heading-lg">What Our Clients Say</h2>
+        </div>
+
+        <div class="testimonials-grid">
+            <!-- Review 1: Sarah Johnson -->
+            <div class="testimonial-card">
+                <div class="testimonial-author">
+                    <img src="{% static 'rental/images/avatar-1.jpg' %}" alt="Sarah Johnson" class="testimonial-avatar">
+                    <div class="author-meta">
+                        <span class="name">Sarah Johnson</span>
+                        <div class="stars-row">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-quote">
+                    "Nestoria made finding our dream home so easy. The process was smooth and fully professional!"
+                </p>
+            </div>
+
+            <!-- Review 2: David Miller -->
+            <div class="testimonial-card">
+                <div class="testimonial-author">
+                    <img src="{% static 'rental/images/avatar-2.jpg' %}" alt="David Miller" class="testimonial-avatar">
+                    <div class="author-meta">
+                        <span class="name">David Miller</span>
+                        <div class="stars-row">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-quote">
+                    "Amazing service and verified listings. I got the perfect apartment in just a few days!"
+                </p>
+            </div>
+
+            <!-- Review 3: Emily Carter -->
+            <div class="testimonial-card">
+                <div class="testimonial-author">
+                    <img src="{% static 'rental/images/avatar-3.jpg' %}" alt="Emily Carter" class="testimonial-avatar">
+                    <div class="author-meta">
+                        <span class="name">Emily Carter</span>
+                        <div class="stars-row">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <p class="testimonial-quote">
+                    "A trusted platform with real value. Highly recommended for anyone looking for a new home."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         BOTTOM CALL TO ACTION BANNER
+         ========================================================================== -->
+    <section class="cta-banner-section">
+        <div class="cta-banner-box">
+            <div class="cta-left-box">
+                <div class="cta-home-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Ready to Find Your Dream Home?</h3>
+                    <p>Join thousands of happy families who found their perfect space with Nestoria.</p>
+                </div>
+            </div>
+
+            <a href="{% url 'register' %}" class="btn-cta-action">
+                Get Started
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

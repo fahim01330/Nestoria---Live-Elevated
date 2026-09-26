@@ -1,0 +1,159 @@
+{% extends "rental/base.html" %}
+{% load static %}
+
+{% block title %}{{ property.title }} | Nestoria - Live Elevated{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb / Back button -->
+    <div class="mb-4">
+        <a href="{% url 'home' %}#featured" class="text-muted d-inline-flex align-items-center gap-2 fw-semibold">
+            <i class="bi bi-arrow-left"></i> Back to All Properties
+        </a>
+    </div>
+
+    <div class="row g-5">
+        <!-- Left: Image & Specs -->
+        <div class="col-lg-7">
+            <div class="position-relative mb-4">
+                {% if property.image %}
+                    <img src="{{ property.image.url }}" alt="{{ property.title }}" class="property-detail-img">
+                {% else %}
+                    <img src="{% static 'rental/images/property-1.jpg' %}" alt="{{ property.title }}" class="property-detail-img">
+                {% endif %}
+                <span class="property-badge-tag badge-featured position-absolute top-0 start-0 m-3 fs-6">
+                    {{ property.property_type }}
+                </span>
+            </div>
+
+            <!-- Specs Grid -->
+            <div class="row row-cols-3 g-3 text-center mb-4">
+                <div class="col">
+                    <div class="p-3 bg-white rounded-4 border shadow-sm">
+                        <i class="bi bi-door-closed fs-3 text-primary mb-1 d-block"></i>
+                        <span class="fw-bold fs-5">{{ property.bedrooms }}</span>
+                        <div class="small text-muted">Bedrooms</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 bg-white rounded-4 border shadow-sm">
+                        <i class="bi bi-droplet fs-3 text-primary mb-1 d-block"></i>
+                        <span class="fw-bold fs-5">{{ property.bathrooms }}</span>
+                        <div class="small text-muted">Bathrooms</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 bg-white rounded-4 border shadow-sm">
+                        <i class="bi bi-aspect-ratio fs-3 text-primary mb-1 d-block"></i>
+                        <span class="fw-bold fs-5">
+                            {% if property.bedrooms == 5 %}4,200
+                            {% elif property.bedrooms == 3 %}2,100
+                            {% elif property.bedrooms == 4 %}3,600
+                            {% else %}2,800{% endif %}
+                        </span>
+                        <div class="small text-muted">Sq Ft Area</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+                <h4 class="fw-bold mb-3">About this Property</h4>
+                <p class="text-secondary leading-relaxed">{{ property.description }}</p>
+            </div>
+        </div>
+
+        <!-- Right: Pricing, Host & Actions -->
+        <div class="col-lg-5">
+            <div class="bg-white p-4 rounded-4 border shadow-sm sticky-top" style="top: 100px;">
+                <h1 class="fw-bold fs-3 mb-2">{{ property.title }}</h1>
+                <div class="d-flex align-items-center gap-2 text-muted mb-3">
+                    <i class="bi bi-geo-alt-fill text-primary"></i>
+                    <span>{{ property.location }}</span>
+                </div>
+
+                <div class="d-flex align-items-baseline gap-2 pb-3 mb-4 border-bottom">
+                    <span class="fs-2 fw-bold text-dark">${{ property.monthly_rent|floatformat:0 }}</span>
+                    <span class="text-muted">/ month</span>
+                </div>
+
+                <!-- Host Details -->
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-4 mb-4">
+                    <div class="brand-icon-box" style="width:48px;height:48px;border-radius:50%;">
+                        <i class="bi bi-person-badge fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ property.owner.get_full_name|default:property.owner.username }}</div>
+                        <div class="small text-muted">Property Host & Verified Owner</div>
+                    </div>
+                </div>
+
+                <!-- Rating summary -->
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-4 bg-light mb-4">
+                    <div class="fw-semibold">Community Rating</div>
+                    <div class="d-flex align-items-center gap-1 text-warning fw-bold">
+                        <i class="bi bi-star-fill"></i>
+                        {% if average_rating %}{{ average_rating|floatformat:1 }} / 5.0{% else %}5.0 / 5.0 (New){% endif %}
+                    </div>
+                </div>
+
+                <!-- Action CTA -->
+                <div class="d-grid gap-2">
+                    {% if user.is_authenticated %}
+                        {% if user != property.owner and property.availability_status == 'available' %}
+                            <a href="{% url 'rental_request_create' property.pk %}" class="btn btn-primary py-3 rounded-pill fw-bold shadow-sm">
+                                <i class="bi bi-send-fill me-2"></i> Send Rental Request
+                            </a>
+                        {% elif user == property.owner %}
+                            <a href="{% url 'property_update' property.pk %}" class="btn btn-dark py-3 rounded-pill fw-bold">
+                                <i class="bi bi-pencil me-2"></i> Edit My Property
+                            </a>
+                        {% endif %}
+
+                        {% if can_review %}
+                            <a href="{% url 'review_create' property.pk %}" class="btn btn-outline-primary py-3 rounded-pill fw-bold">
+                                <i class="bi bi-star me-2"></i> Leave a Review
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary py-3 rounded-pill fw-bold shadow-sm">
+                            Sign in to Rent This Home
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4">Resident & Tenant Reviews</h3>
+        <div class="row g-4">
+            {% for r in reviews %}
+                <div class="col-md-6">
+                    <div class="bg-white p-4 rounded-4 border shadow-sm h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-light rounded-circle p-2 text-primary fw-bold">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                                <span class="fw-bold">{{ r.tenant.first_name|default:r.tenant.username }}</span>
+                            </div>
+                            <div class="text-warning">
+                                {% for i in "12345" %}
+                                    <i class="bi bi-star-fill"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="text-secondary mb-0 fst-italic">"{{ r.comment }}"</p>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <p class="text-muted">No reviews yet for this property.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
